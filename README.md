@@ -82,6 +82,3 @@ Then open http://localhost:8000 in your browser.
 
 ## Contact
 If you'd like help implementing any of the next steps (automating builds, CI, accessibility audits, or converting icons), tell me which one and I can implement it.
-
----
-_README generated/updated by an assistant based on the repository contents and recent changes._
