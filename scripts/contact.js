@@ -12,6 +12,9 @@
     function initContactForm() {
         if (!contactForm) return;
 
+        // Ensure there's an aria-live region for screen readers
+        ensureAriaLiveRegion();
+
         // Add form submission handler
         contactForm.addEventListener('submit', handleFormSubmission);
 
@@ -208,6 +211,7 @@
     function showFormSuccess() {
         hideMessages();
         successMessage.style.display = 'block';
+        announceStatus('Message sent successfully');
         successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         // Auto-hide success message after 5 seconds
@@ -220,6 +224,7 @@
     function showFormError(message) {
         hideMessages();
         errorMessage.querySelector('p').textContent = message;
+        announceStatus('There was an error sending your message. ' + message);
         errorMessage.style.display = 'block';
         errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -479,6 +484,28 @@
         }
     `;
     document.head.appendChild(formStyle);
+
+    // Helper: create or find an aria-live region used for announcements
+    function ensureAriaLiveRegion() {
+        let live = document.getElementById('aria-live-status');
+        if (!live) {
+            live = document.createElement('div');
+            live.id = 'aria-live-status';
+            live.className = 'sr-only';
+            live.setAttribute('aria-live', 'polite');
+            live.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(live);
+        }
+    }
+
+    // Announce a short status message via the aria-live region
+    function announceStatus(msg) {
+        const live = document.getElementById('aria-live-status');
+        if (!live) return;
+        // Clear then set to ensure change is detected by assistive tech
+        live.textContent = '';
+        setTimeout(() => { live.textContent = msg; }, 50);
+    }
 
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
